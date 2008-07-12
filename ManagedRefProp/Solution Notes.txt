@@ -1,0 +1,50 @@
+ManagedREFPROP
+--------------
+is the new project which I am trying to eliminate the error which appears 
+in the first project (an exception that tells me erroooooooooooooooor)
+
+the idea is to include all functionality in one native class
+and to make the managed class refrence only a pointer to the native class
+
+i noticed this behaviour when I was making library for sqlite code
+
+but problem here that all REFPROP code is handling the current loaded fluid or mixture
+in sqlite things were more easier because it employs handle to the database and passed to the functions
+
+but due to REFPROP is programmed by Scientists not programmers they made the effort to calculations 
+and the library is going well under VBA so I can't blame them
+
+the error is still exist
+------------------
+
+I made another win32 console application  using intelRefProb built from intel fortran
+1 - setting basic run time check  to /RTCu
+          (this eliminates the ESP check i think)
+
+2- advice from internet
+    Ah, the old "assign into a constant" trick...
+    In the Fortran project properties, Data page, 
+    set "Constant Actual Arguments Can Be Changed" to Yes.  
+    This will have the compiler create a temporary copy of the constant, 
+    which the subroutine can assign into and then the value will be discarded on routine exit.
+    
+3- following the previous advice and setting other options in the Data page 
+adding pdb file with the dll
+(Now application run but I noticed that when u give error inputs the library is then unstable and crash)
+
+I need to some how reset the error caused in the library
+
+
+the error was that I am using hfld in comparing and etc.. so don;t point to strings copy them alawys
+
+
+another error was raised from using dynamic allocation for arrays
+REFPROP is bad in this when I treat all arrays as a fixed array from 20 element it worked
+
+I made a quick test for speed with debug and release version of refprop using intel compiler
+
+26125    debug version
+17093    Release Version
+
+this makes ((26125-17093)/26125)*100
+34.5 %  release version faster than debug :) it is a huge difference by the way
