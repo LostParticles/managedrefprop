@@ -12,7 +12,7 @@ namespace TestManagedRefProp
         static void Main(string[] args)
         {
             
-            //Console.WriteLine("Water Properties at 101.3 pascal" + Environment.NewLine);
+            Console.WriteLine("Water Properties at 101.3 pascal" + Environment.NewLine);
             
 
 
@@ -20,14 +20,15 @@ namespace TestManagedRefProp
 
             Water.CurrentUnitsBasis = ManagedRefProp.Common.UnitsBasis.Mass_Basis;
 
+
+
             Water.WarnEvent += new RefProp_Warning(Water_WarnEvent);
 
 
 
-            Console.ForegroundColor = ConsoleColor.White;
 
 
-            Console.WriteLine(Water.GetSaturatedTemperature(101.3)-273.15);
+            Console.WriteLine(Water.GetSaturatedTemperature(101.3) - 273.15);
 
             
         }
