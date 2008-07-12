@@ -11,8 +11,10 @@
 using namespace System;
 using namespace System::Runtime::InteropServices;
 
+using namespace ManagedRefProp::Common;
 
-namespace ManagedREFPROP {
+
+namespace ManagedRefProp {
 
 	public delegate void RefProp_Warning(String^ WarningMessage);
 	public delegate void RefProp_Done();
@@ -161,61 +163,62 @@ c     Rgas--gas constant [J/mol-K]
 
 
 
-		double GetSaturatedPressure(double Temperature)
+		double GetSaturatedPressure(double temperature)
 		{
-			double p = MyREFPROP->GetSaturatedPressure(Temperature);
+			double p = MyREFPROP->GetSaturatedPressure(temperature);
 			CheckError();
 			return p;
 		}
 
 
-		double GetSaturatedTemperature(double Pressure)
+		double GetSaturatedTemperature(double pressure)
 		{
-			double t = MyREFPROP->GetSaturatedTemperature(Pressure);
+			double t = MyREFPROP->GetSaturatedTemperature(pressure);
 			CheckError();
 			return t;
 		}
 
 
-		ThermoPropertiesValues^ GetFlashProperties(ThermoProperties Property_1,double Value_1,ThermoProperties Property_2,double Value_2)
+		
+		ThermoPropertiesValues^ GetFlashProperties(ThermoProperties property_1,double value_1,ThermoProperties property_2,double value_2)
 		{
 
 
 			REFPROP::ThermoProperties prop1,prop2;
 
-			if(Property_1== ThermoProperties::Density)
+			if(property_1== ThermoProperties::Density)
 				prop1 = REFPROP::ThermoProperties::Density;
-			if(Property_1== ThermoProperties::Enthalpy)
+			if(property_1== ThermoProperties::Enthalpy)
 				prop1 = REFPROP::ThermoProperties::Enthalpy;
-			if(Property_1== ThermoProperties::Entropy)
+			if(property_1== ThermoProperties::Entropy)
 				prop1 = REFPROP::ThermoProperties::Entropy;
-			if(Property_1== ThermoProperties::InternalEnergy)
+			if(property_1== ThermoProperties::InternalEnergy)
 				prop1 = REFPROP::ThermoProperties::InternalEnergy;
-			if(Property_1== ThermoProperties::Pressure)
+			if(property_1== ThermoProperties::Pressure)
 				prop1 = REFPROP::ThermoProperties::Pressure;
-			if(Property_1== ThermoProperties::Quality)
+			if(property_1== ThermoProperties::Quality)
 				prop1 = REFPROP::ThermoProperties::Quality;
-			if(Property_1== ThermoProperties::Temperature)
+			if(property_1== ThermoProperties::Temperature)
 				prop1 = REFPROP::ThermoProperties::Temperature;
 
-			if(Property_2== ThermoProperties::Density)
+			if(property_2== ThermoProperties::Density)
 				prop2 = REFPROP::ThermoProperties::Density;
-			if(Property_2== ThermoProperties::Enthalpy)
+			if(property_2== ThermoProperties::Enthalpy)
 				prop2 = REFPROP::ThermoProperties::Enthalpy;
-			if(Property_2== ThermoProperties::Entropy)
+			if(property_2== ThermoProperties::Entropy)
 				prop2 = REFPROP::ThermoProperties::Entropy;
-			if(Property_2== ThermoProperties::InternalEnergy)
+			if(property_2== ThermoProperties::InternalEnergy)
 				prop2 = REFPROP::ThermoProperties::InternalEnergy;
-			if(Property_2== ThermoProperties::Pressure)
+			if(property_2== ThermoProperties::Pressure)
 				prop2 = REFPROP::ThermoProperties::Pressure;
-			if(Property_2== ThermoProperties::Quality)
+			if(property_2== ThermoProperties::Quality)
 				prop2 = REFPROP::ThermoProperties::Quality;
-			if(Property_2== ThermoProperties::Temperature)
+			if(property_2== ThermoProperties::Temperature)
 				prop2 = REFPROP::ThermoProperties::Temperature;
 
 
 			MyREFPROP->GetFlashProperties
-				(prop1, Value_1, prop2, Value_2);
+				(prop1, value_1, prop2, value_2);
 
 
 			CheckError();
@@ -245,11 +248,11 @@ c     Rgas--gas constant [J/mol-K]
 
 		}
 
-		ThermoPropertiesValues^ ThermalProperties(double Temperature, double Density)
+		ThermoPropertiesValues^ ThermalProperties(double temperature, double density)
 		{
 
 
-			MyREFPROP->ThermalProperties(Temperature,Density);
+			MyREFPROP->ThermalProperties(temperature,density);
 
 			CheckError();
 			ThermoPropertiesValues^ VLS = gcnew ThermoPropertiesValues();

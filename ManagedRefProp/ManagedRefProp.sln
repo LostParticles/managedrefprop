@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManagedREFPROP", "ManagedREFPROP\ManagedREFPROP.vcproj", "{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManagedRefProp", "ManagedREFPROP\ManagedREFPROP.vcproj", "{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{90EDF5D4-448C-4F76-B1A5-67AE98DE60B3}"
 	ProjectSection(SolutionItems) = preProject
@@ -14,25 +14,50 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{90EDF5D4
 		UTILITY SUBROUTINES.TXT = UTILITY SUBROUTINES.TXT
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestManagedRefProp", "TestManagedRefProp\TestManagedRefProp.csproj", "{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 2
+		SccNumberOfProjects = 3
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs03.codeplex.com/
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = ManagedREFPROP\\ManagedREFPROP.vcproj
 		SccProjectName1 = ManagedRefProp
 		SccLocalPath1 = ManagedREFPROP
+		SccProjectUniqueName2 = TestManagedRefProp\\TestManagedRefProp.csproj
+		SccProjectName2 = TestManagedRefProp
+		SccLocalPath2 = TestManagedRefProp
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|Win32 = Debug|Win32
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Debug|Mixed Platforms.Build.0 = Debug|Win32
 		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Debug|Win32.ActiveCfg = Debug|Win32
 		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Debug|Win32.Build.0 = Debug|Win32
+		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Release|Any CPU.ActiveCfg = Release|Win32
+		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Release|Win32.ActiveCfg = Release|Win32
 		{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}.Release|Win32.Build.0 = Release|Win32
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
