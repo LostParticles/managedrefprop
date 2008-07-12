@@ -12,31 +12,53 @@ namespace TestManagedRefProp
         static void Main(string[] args)
         {
             
-            Console.WriteLine("Water Properties at 101.3 pascal" + Environment.NewLine);
+            Console.WriteLine("Saturated Temperatures of Water and Ammonia" + Environment.NewLine);
             
 
 
-            ManagedRefProp.PureFluid Water = new ManagedRefProp.PureFluid("Water");
+            PureFluid Water = new PureFluid("Water");
 
-            Water.CurrentUnitsBasis = ManagedRefProp.Common.UnitsBasis.Mass_Basis;
-
-
-
-            Water.WarnEvent += new RefProp_Warning(Water_WarnEvent);
+            PureFluid Ammonia = new PureFluid("Ammonia");
 
 
+            Water.CurrentUnitsBasis = UnitsBasis.Mass_Basis;
+            Ammonia.CurrentUnitsBasis = UnitsBasis.Mass_Basis;
 
 
 
-            Console.WriteLine(Water.GetSaturatedTemperature(101.3) - 273.15);
+
+            Water.WarnEvent += new EventHandler<WarningEventArgs>(Fluid_WarnEvent);
+            Ammonia.WarnEvent += new EventHandler<WarningEventArgs>(Fluid_WarnEvent);
+
+
+
+            Console.WriteLine("{0}    {1}               {2}", "Pressure (Pa)", "Water (C)", "Ammonia (C)");
+            Console.WriteLine("{0}    {1}               {2}", "-------------", "---------", "-----------");
+            Console.WriteLine();
+
+            for (int P = 100; P <= 600; P += 50)
+            {
+
+                Console.WriteLine("{0}              {1}        {2}",
+                    P,
+                    Water.GetSaturatedTemperature(P) - 273.15,
+                    Ammonia.GetSaturatedTemperature(P) - 273.15
+                    );
+            }
 
             
         }
 
-        static void Water_WarnEvent(string WarningMessage)
+        static void  Fluid_WarnEvent(object sender, WarningEventArgs e)
         {
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine(WarningMessage);
+            Console.WriteLine(sender.ToString() + ": " + e.WarningMessage);
         }
+
+
+        
+
+      
     }
 }
+

@@ -16,20 +16,41 @@ using namespace ManagedRefProp::Common;
 
 namespace ManagedRefProp {
 
-	public delegate void RefProp_Warning(String^ WarningMessage);
-	public delegate void RefProp_Done();
+	public ref class WarningEventArgs : EventArgs
+	{
+	private:
+		String^ _WarningMessage;
+	public:
+		WarningEventArgs(String^ warningMessage)
+		{
+			_WarningMessage = warningMessage;
+		}
 
+		property String^ WarningMessage
+		{
+			String^ get()
+			{
+				return _WarningMessage;
+			}
+		}
+
+
+	};
+
+	
 	public ref class PureFluid sealed
 	{
 
 	private:
 		REFPROP* MyREFPROP;
 
+		String^ _fluidName;
+
 	public:
 		int ErrorCode;
 		String^ ErrorMessage;
-		event RefProp_Warning^ WarnEvent;
-		event RefProp_Done^ DoneEvent;
+		event EventHandler<WarningEventArgs^>^ WarnEvent;
+		event EventHandler^ DoneEvent;
 
 		property UnitsBasis CurrentUnitsBasis
 		{
@@ -45,6 +66,7 @@ namespace ManagedRefProp {
 			{
 				if(value == UnitsBasis::Mass_Basis)
 					MyREFPROP->CurrentUnitsBasis =  REFPROP::UnitsBasis::Mass_Basis;
+			
 				else
 					MyREFPROP->CurrentUnitsBasis =  REFPROP::UnitsBasis::Molar_Basis;
 
@@ -54,6 +76,7 @@ namespace ManagedRefProp {
 		
 		PureFluid(String^ fluid_name)
 		{
+			_fluidName = fluid_name;
 
 			fluid_name  = fluid_name+".FLD";
 			IntPtr mb = Marshal::StringToHGlobalAnsi(fluid_name);
@@ -66,6 +89,19 @@ namespace ManagedRefProp {
 
 			CheckError();
 
+		}
+
+		property String^ FluidName
+		{
+			String^ get()
+			{
+				return _fluidName;
+			}
+		}
+
+		virtual String^ ToString() override
+		{
+			return FluidName::get();
 		}
 
 		//Fluid Info Section
@@ -289,7 +325,7 @@ c     Rgas--gas constant [J/mol-K]
 			if(ErrorCode>0)
 			{
 				ErrorMessage = Marshal::PtrToStringAnsi((IntPtr)MyREFPROP->herr);
-				WarnEvent(ErrorMessage);
+				WarnEvent(this, gcnew WarningEventArgs(ErrorMessage));
 			}
 			else if(ErrorCode<0)
 			{
@@ -299,7 +335,7 @@ c     Rgas--gas constant [J/mol-K]
 
 			else
 			{
-				DoneEvent();
+				DoneEvent(this, gcnew EventArgs());
 			}
 
 			
