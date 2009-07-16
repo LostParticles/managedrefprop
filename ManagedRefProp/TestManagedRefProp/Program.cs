@@ -4,6 +4,9 @@ using System.Text;
 
 using ManagedRefProp;
 using ManagedRefProp.Common;
+using QuantitySystem.Quantities;
+using QuantitySystem.Units;
+using QuantitySystem.Quantities.BaseQuantities;
 
 namespace TestManagedRefProp
 {
@@ -32,17 +35,19 @@ namespace TestManagedRefProp
 
 
 
-            Console.WriteLine("{0}    {1}               {2}", "Pressure (Pa)", "Water (C)", "Ammonia (C)");
+            Console.WriteLine("{0}    {1}               {2}", "Pressure (Pa)", "Water (K)", "Ammonia (K)");
             Console.WriteLine("{0}    {1}               {2}", "-------------", "---------", "-----------");
             Console.WriteLine();
 
-            for (int P = 100; P <= 600; P += 50)
+
+            for (Pressure<double> P = (Pressure<double>)Unit.ParseQuantity("100<Pa>"); 
+                 P.Value <= 600; P.Value += 50)
             {
 
-                Console.WriteLine("{0}              {1}        {2}",
+                Console.WriteLine("{0} {1} {2}",
                     P,
-                    Water.GetSaturatedTemperature(P) - 273.15,
-                    Ammonia.GetSaturatedTemperature(P) - 273.15
+                    Water.GetSaturatedTemperature(P),
+                    Ammonia.GetSaturatedTemperature(P)
                     );
             }
 
