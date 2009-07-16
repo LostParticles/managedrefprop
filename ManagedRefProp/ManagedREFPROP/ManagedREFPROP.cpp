@@ -2,5 +2,7 @@
 
 #include "stdafx.h"
 
-#include "ManagedREFPROP.h"
+#include "WarningEventArgs.h"
+#include "PureFluid.h"
+
 

@@ -16,6 +16,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{90EDF5D4
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestManagedRefProp", "TestManagedRefProp\TestManagedRefProp.csproj", "{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "QuantitySystem", "QuantitySystem", "{D46F3A05-B015-43B9-A3ED-A4AABCD1406B}"
+	ProjectSection(SolutionItems) = preProject
+		QuantitySystem\QuantitySystem.dll = QuantitySystem\QuantitySystem.dll
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 3

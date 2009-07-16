@@ -10,7 +10,7 @@
 	SccLocalPath="SAK"
 	SccProvider="SAK"
 	Keyword="ManagedCProj"
-	TargetFrameworkVersion="131072"
+	TargetFrameworkVersion="196613"
 	>
 	<Platforms>
 		<Platform
@@ -182,6 +182,11 @@
 			AssemblyName="System.Xml, Version=2.0.0.0, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL"
 			MinFrameworkVersion="131072"
 		/>
+		<AssemblyReference
+			RelativePath="..\QuantitySystem\QuantitySystem.dll"
+			AssemblyName="QuantitySystem, Version=1.1.1.0, PublicKeyToken=f94eebe93061cf28, processorArchitecture=MSIL"
+			MinFrameworkVersion="196613"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -228,7 +233,7 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\ManagedREFPROP.h"
+				RelativePath=".\PureFluid.h"
 				>
 			</File>
 			<File
@@ -245,6 +250,10 @@
 			</File>
 			<File
 				RelativePath=".\Stdafx.h"
+				>
+			</File>
+			<File
+				RelativePath=".\WarningEventArgs.h"
 				>
 			</File>
 		</Filter>

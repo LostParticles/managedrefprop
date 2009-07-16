@@ -13,31 +13,13 @@ using namespace System::Runtime::InteropServices;
 
 using namespace ManagedRefProp::Common;
 
+using namespace QuantitySystem;
+using namespace QuantitySystem::Units;
+
+
 
 namespace ManagedRefProp {
 
-	public ref class WarningEventArgs : EventArgs
-	{
-	private:
-		String^ _WarningMessage;
-	public:
-		WarningEventArgs(String^ warningMessage)
-		{
-			_WarningMessage = warningMessage;
-		}
-
-		property String^ WarningMessage
-		{
-			String^ get()
-			{
-				return _WarningMessage;
-			}
-		}
-
-
-	};
-
-	
 	public ref class PureFluid sealed
 	{
 
@@ -206,6 +188,15 @@ c     Rgas--gas constant [J/mol-K]
 			return p;
 		}
 
+		Quantities::Pressure<double>^ GetSaturatedPressure(Quantities::BaseQuantities::Temperature<double>^ temperature)
+		{
+			Quantities::Pressure<double> ^pr = gcnew Quantities::Pressure<double>();
+			pr->Value = GetSaturatedPressure(temperature->Value);
+			pr->Unit = Unit::DiscoverUnit(pr);
+			return pr;
+			
+		}
+
 
 		double GetSaturatedTemperature(double pressure)
 		{
@@ -214,6 +205,14 @@ c     Rgas--gas constant [J/mol-K]
 			return t;
 		}
 
+		Quantities::BaseQuantities::Temperature<double>^ GetSaturatedTemperature(Quantities::Pressure<double>^ pressure)
+		{
+			Quantities::BaseQuantities::Temperature<double> ^tr = gcnew Quantities::BaseQuantities::Temperature<double>();
+			tr->Value = GetSaturatedTemperature(pressure->Value);
+			tr->Unit = Unit::DiscoverUnit(tr);
+			return tr;
+			
+		}
 
 		
 		ThermoPropertiesValues^ GetFlashProperties(ThermoProperties property_1,double value_1,ThermoProperties property_2,double value_2)
@@ -342,4 +341,5 @@ c     Rgas--gas constant [J/mol-K]
 		}
 
 	};
+
 }
