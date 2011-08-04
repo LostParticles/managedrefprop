@@ -1,0 +1,8 @@
+
+I am trying to support fluid mixtures
+
+that was triggered when an email came to me from Sri Lanka asking me to add such a functionality
+
+I will add new managed class
+
+var mix = MixedFluid("CO2=0.45", "R14=0.55");

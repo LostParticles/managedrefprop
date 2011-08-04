@@ -1,5 +1,7 @@
 #pragma once
 #include <string>
+#include <vector>
+
 using namespace std;
 
 
@@ -15,7 +17,7 @@ using namespace std;
 
 #define maxcomposition 20
 
-class REFPROP
+class RefProp
 {
 public:
 	enum ThermoProperties
@@ -53,10 +55,14 @@ private:
 
 
 	bool IsPureFluid;
+	bool IsMixedFluid;
 	bool Reload;
 
 
 	char* Fluid_Name;
+
+	vector<string> _fluids;
+	vector<double> _fractions;
 
 public:
 	//INFO variables  cached 
@@ -129,12 +135,13 @@ public:
 
 public:
 
-	REFPROP(void);
-	~REFPROP();
+	RefProp(void);
+	~RefProp();
 
 
 	void LoadPureFluid(char* FluidName); //result in nc=1
-	//void LoadMixture();
+
+	void LoadMixedFluid(vector<string> fluids, vector<double> fractions);
 
 
 	void EnsureCurrentFluid(void);
