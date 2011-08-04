@@ -1,4 +1,3 @@
-// ManagedREFPROP.h
 
 #pragma once
 #include "RefProp.h"
@@ -7,8 +6,6 @@
 
 #include "IFluid.h"
 
-//#pragma warning(disable:4482)   //to prevent warning of using full qualified name, I need it because I duplicate the names in native and managed code
-
 
 
 using namespace System;
@@ -16,16 +13,18 @@ using namespace System::Runtime::InteropServices;
 
 using namespace ManagedRefProp::Common;
 
-
 namespace ManagedRefProp {
 
-	public ref class PureFluid sealed : public IFluid
+	public ref class MixedFluid sealed : public IFluid
 	{
 
 	private:
 		RefProp* MyREFPROP;
 
-		String^ _fluidName;
+		array<String^>^ Fluids; 
+		array<double>^ Fractions;
+
+
 	public:
 		int ErrorCode;
 		String^ ErrorMessage;
@@ -54,67 +53,58 @@ namespace ManagedRefProp {
 		}
 
 		
-		PureFluid(String^ fluid_name)
+
+		///
+		/// fluids parameter is on the format  ("R12=0.5",R22=0.5")
+		///
+		MixedFluid(... array<String^>^ fluids)
 		{
-			_fluidName = fluid_name;
+			//_fluidName = fluid_name;
 
-			fluid_name  = fluid_name+".FLD";
-			IntPtr mb = Marshal::StringToHGlobalAnsi(fluid_name);
+			//fluid_name  = fluid_name+".FLD";
+			//IntPtr mb = Marshal::StringToHGlobalAnsi(fluid_name);
 
+			vector<string> _fluids;
+			vector<double> _fractions;
 
 			MyREFPROP = new RefProp();
-			char* fld = (char*)mb.ToPointer();
-			MyREFPROP->LoadPureFluid(fld);
+
+			int flength = fluids->Length;
+
+			Fluids = gcnew array<String^>(flength);
+			Fractions = gcnew array<double>(flength);
+			
+
+			for(int iy=0; iy<flength; iy++)
+			{
+				array<String^>^ flds = fluids[iy]->Split('=');
+
+				Fluids[iy] = flds[0]->Trim();
+
+				Fractions[iy] = double::Parse(flds[1]);
+
+				IntPtr flp = Marshal::StringToHGlobalAnsi(Fluids[iy]+".fld");
+
+				_fluids.push_back((char*)flp.ToPointer());
+
+				double frc = Fractions[iy];
+				_fractions.push_back(frc);
+
+			}
+			
+
+			MyREFPROP->LoadMixedFluid(_fluids, _fractions);
 
 
 			CheckError();
 
 		}
 
-		~PureFluid() // IDisposable
+		~MixedFluid() // IDisposable
 		{
 			delete MyREFPROP;
 		}
 
-
-
-
-		property String^ FluidName
-		{
-			String^ get()
-			{
-				return _fluidName;
-			}
-		}
-
-		virtual String^ ToString() override
-		{
-			return FluidName::get();
-		}
-
-		
-		//Fluid Info Section
-		
-		/*
-				subroutine INFO (icomp,wm,ttp,tnbp,tc,pc,Dc,Zc,acf,dip,Rgas)
-				c
-				c  provides fluid constants for specified component
-				c
-				c  input:
-				c    icomp--component number in mixture; 1 for pure fluid
-				c  outputs:
-				c       wm--molecular weight [g/mol]
-				c      ttp--triple point temperature [K]
-				c     tnbp--normal boiling point temperature [K]
-				c       tc--critical temperature [K]
-				c       pc--critical pressure [kPa]
-				c       Dc--critical density [mol/L]
-				c       Zc--compressibility at critical point [pc/(Rgas*Tc*Dc)]
-				c      acf--accentric factor [-]
-				c      dip--dipole moment [debye]
-				c     Rgas--gas constant [J/mol-K]
-
-		*/
 
 		virtual property double MolecularWeight
 		{
@@ -198,15 +188,12 @@ namespace ManagedRefProp {
 		}
 
 
-
 		virtual double GetSaturatedPressure(double temperature)
 		{
 			double p = MyREFPROP->GetSaturatedPressure(temperature);
 			CheckError();
 			return p;
 		}
-
-
 
 		///
 		/// Get the saturated temperature of the fluid based on the pressure.
@@ -288,37 +275,6 @@ namespace ManagedRefProp {
 
 		}
 
-		ThermoPropertiesValues^ ThermalProperties(double temperature, double density)
-		{
-
-
-			MyREFPROP->ThermalProperties(temperature,density);
-
-			CheckError();
-			ThermoPropertiesValues^ VLS = gcnew ThermoPropertiesValues();
-
-
-
-			VLS->Temperature = MyREFPROP->t;
-			VLS->Pressure = MyREFPROP->p;
-			VLS->Density = MyREFPROP->D;
-			VLS->InternalEnergy = MyREFPROP->e;
-			VLS->Enthalpy = MyREFPROP->h;
-			VLS->Entropy = MyREFPROP->s;
-			VLS->Quality = MyREFPROP->q;
-			VLS->Isochoric_SpecificHeat = MyREFPROP->cv;
-			VLS->Isobaric_SpecificHeat = MyREFPROP->cp;
-			VLS->SoundSpeed = MyREFPROP->w;
-			VLS->Density_LiquidPhase = MyREFPROP->rhol;
-			VLS->Density_VaporPhase = MyREFPROP->rhov;
-			VLS->XLIQ = gcnew array<double>(1);
-				VLS->XLIQ[0] = MyREFPROP->XLIQ[0];
-			VLS->XVAP = gcnew array<double>(1);
-				VLS->XVAP[0] = MyREFPROP->XVAP[0];
-
-
-			return VLS;
-		}
 
 
 		private:
@@ -329,6 +285,7 @@ namespace ManagedRefProp {
 			if(ErrorCode>0)
 			{
 				ErrorMessage = Marshal::PtrToStringAnsi((IntPtr)MyREFPROP->herr);
+
 				WarnEvent(this, gcnew WarningEventArgs(ErrorMessage));
 			}
 			else if(ErrorCode<0)
@@ -340,11 +297,7 @@ namespace ManagedRefProp {
 			else
 			{
 				DoneEvent(this, gcnew EventArgs());
-			}
-
-			
+			}			
 		}
-
 	};
-
 }

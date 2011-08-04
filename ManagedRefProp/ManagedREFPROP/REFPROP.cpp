@@ -109,7 +109,7 @@ char* Library_Fluids_Folder = "Fluids";
 #pragma warning(disable:4482)   //to prevent warning of using full qualified name, I need it because I duplicate the names in native and managed code
 
 
-REFPROP::REFPROP(void)
+RefProp::RefProp(void)
 {
 	CurrentUnitsBasis = Molar_Basis;
 	Reload=false;
@@ -257,18 +257,94 @@ REFPROP::REFPROP(void)
 
 }
 
-REFPROP::~REFPROP()
+RefProp::~RefProp()
 {
 
-	/*
-	delete XLIQ;
-	delete XVAP;
-	delete x;
-	*/
-	//printf(hfld);
-	//printf("\n");
 }
-void REFPROP::LoadPureFluid(char* FluidName)
+void RefProp::LoadMixedFluid(vector<string> fluids, vector<double> fractions)
+{
+	
+	if(!Reload)
+	{
+		if(fluids.size() != fractions.size()) throw "Number of fractions doesn't equal number of fluids";
+
+		if(fluids.size()>20) throw "Number of mixtures exceeds the library limit > 20 fluid";
+
+		nc = fluids.size();
+
+		vector<string>::iterator fli = fluids.begin();
+
+
+		_fluids = fluids;
+		_fractions = fractions;
+
+		char dfluid[10000] = ""; //temporary variable to store the fluid text
+
+		
+		// first fluid
+		//strcat_s(dfluid,10000, ccd);
+		//strcat_s(dfluid,10000, "\\");
+		strcat_s(dfluid,10000, Library_Fluids_Folder);
+		strcat_s(dfluid,10000, "\\");
+		strcat_s(dfluid,10000, (*fli).c_str());
+
+		// advance to rest of fluids
+		++fli;
+		for (; fli != fluids.end(); ++fli) {
+
+			strcat_s(dfluid,10000, "|");
+			//strcat_s(dfluid,10000, ccd);
+			//strcat_s(dfluid,10000, "\\");
+			strcat_s(dfluid,10000, Library_Fluids_Folder);
+			strcat_s(dfluid,10000, "\\");
+			strcat_s(dfluid,10000, (*fli).c_str());
+		}
+		strcat_s(dfluid,10000, "|");  // add | in the end because the library goes crazy when you don't append this to the latest fluid :)
+
+		vector<double>::iterator fri = fractions.begin();
+		int iy = 0;
+		for(;fri != fractions.end(); ++fri){
+			x[iy] = *fri;
+			XLIQ[iy] = 0.0;
+			XVAP[iy] = 0.0;
+			iy++;
+		}
+
+
+		// setup the library
+		strcpy_s(hfld, 10000, dfluid);
+
+		//hfld = (char*) CurrentFluid.c_str();
+
+		char bnc[255]="";
+		//strcat_s(bnc,255, ccd);
+		//strcat_s(bnc,255, "\\");
+		strcat_s(bnc,255,Library_Fluids_Folder);
+		strcat_s(bnc,255,"\\");
+		strcat_s(bnc,255,"HMX.BNC");
+
+		strcpy_s(hfmix,255,bnc);
+
+		strcpy_s(hrf,4,"DEF");
+		
+		IsPureFluid = false;
+		IsMixedFluid = true;
+
+		SETUPdll(nc, hfld, hfmix, hrf, ierr, herr, 10000, 255, 3, 255);
+
+		INFOdll(nc, wm, ttp, tnbp, tc, pc, Dc, Zc, acf, dip, Rgas);
+		Reload = false;
+	}
+	else
+	{
+		SETUPdll(nc, hfld, hfmix, hrf, ierr, herr, 10000, 255, 3, 255);
+	}
+
+	strcpy_s(CurrentLibrary_Fluid_Name, 10000, hfld);
+
+}
+
+void RefProp::LoadPureFluid(char* FluidName)
 {
 
 	if(!Reload)
@@ -282,26 +358,19 @@ void REFPROP::LoadPureFluid(char* FluidName)
 
 		//preparing variables that depend on number of components
 
-		//x = new double[nc];
-		//XLIQ = new double[nc];
-		//XVAP = new double[nc];
-
 
 		char dfluid[10000]="";
-		strcat_s(dfluid,10000,Library_Fluids_Folder);
-		strcat_s(dfluid,10000,"\\");
-		strcat_s(dfluid,10000,FluidName);
+		strcat_s(dfluid,10000, Library_Fluids_Folder);
+		strcat_s(dfluid,10000, "\\");
+		strcat_s(dfluid,10000, FluidName);
 
 		x[0] = 1.0;
 		XLIQ[0] = 0.0;
 		XVAP[0] = 0.0;
 
-
-
-		strcpy_s(hfld,10000,dfluid);
+		strcpy_s(hfld, 10000, dfluid);
 
 		//hfld = (char*) CurrentFluid.c_str();
-
 
 		char bnc[255]="";
 		strcat_s(bnc,255,Library_Fluids_Folder);
@@ -310,11 +379,10 @@ void REFPROP::LoadPureFluid(char* FluidName)
 
 		strcpy_s(hfmix,255,bnc);
 
-		//hfmix = (char*) bnc.c_str();
 		strcpy_s(hrf,4,"DEF");
 		
-		
 		IsPureFluid = true;
+		IsMixedFluid = false;
 
 		SETUPdll(nc, hfld, hfmix, hrf, ierr, herr, 10000, 255, 3, 255);
 
@@ -327,91 +395,90 @@ void REFPROP::LoadPureFluid(char* FluidName)
 		SETUPdll(nc, hfld, hfmix, hrf, ierr, herr, 10000, 255, 3, 255);
 	}
 
-	
 	strcpy_s(CurrentLibrary_Fluid_Name,10000,hfld);
-
-
-
 }
 
 
-void REFPROP::EnsureCurrentFluid(void)
+
+
+
+
+
+void RefProp::EnsureCurrentFluid(void)
 {
 	//compare the instance fluid with the library fluid and load this
 	// instance if required
 
-
-	
-
-	if (strcmp(CurrentLibrary_Fluid_Name,hfld)!=0)
+	if (strcmp(CurrentLibrary_Fluid_Name, hfld) != 0)
 	{
 		Reload = true;   //don't allocate memory again for allocated ones
 		if(IsPureFluid)
 		{
-
-
-			LoadPureFluid(Fluid_Name);
-
+			this->LoadPureFluid(Fluid_Name);
+		}
+		else if(IsMixedFluid)
+		{
+			this->LoadMixedFluid(_fluids, _fractions);
 		}
 	}
 }
 
-double REFPROP::GetMolecularWeight(void)
+double RefProp::GetMolecularWeight(void)
 {
 	return wm;
 }
 
-double REFPROP::GetTriplePointTemperature(void)
+double RefProp::GetTriplePointTemperature(void)
 {
 	return ttp;
 }
 
-double REFPROP::GetNormalBoilingPointTemperature(void)
+double RefProp::GetNormalBoilingPointTemperature(void)
 {
 	return tnbp;
 }
 
-double REFPROP::GetCriticalTemperature(void)
+double RefProp::GetCriticalTemperature(void)
 {
 	return tc;
 }
 
-double REFPROP::GetCriticalPressure(void)
+double RefProp::GetCriticalPressure(void)
 {
 	return pc;
 }
 
-double REFPROP::GetCriticalDensity(void)
+double RefProp::GetCriticalDensity(void)
 {
 	return Dc;
 }
 
-double REFPROP::GetCriticalPointCompressibility(void)
+double RefProp::GetCriticalPointCompressibility(void)
 {
 	return Zc;
 }
 
-double REFPROP::GetAccentricFactor(void)
+double RefProp::GetAccentricFactor(void)
 {
 	return acf;
 }
 
-double REFPROP::GetDipoleMoment(void)
+double RefProp::GetDipoleMoment(void)
 {
 	return dip;
 }
 
-double REFPROP::GetGasConstatnt_R(void)
+double RefProp::GetGasConstatnt_R(void)
 {
 	return Rgas;
 }
 
-double REFPROP::GetSaturatedPressure(double Temperature)
+double RefProp::GetSaturatedPressure(double Temperature)
 {
 
 	EnsureCurrentFluid(); // must be called before any code
 
-	long kph = 2;
+	long kph = 2;  //Vapor
 
 	SATTdll(Temperature, x,kph,p,rhol,rhov,XLIQ,XVAP,ierr,herr,255);	
 
@@ -420,18 +487,18 @@ double REFPROP::GetSaturatedPressure(double Temperature)
 	return p;
 }
 
-double REFPROP::GetSaturatedTemperature(double Pressure)
+double RefProp::GetSaturatedTemperature(double Pressure)
 {
 	EnsureCurrentFluid(); // must be called before any code
 
-	long kph = 2;
+	long kph = 2; // Vapor
 	
 	SATPdll(Pressure, x,kph,t,rhol,rhov,XLIQ,XVAP,ierr,herr,255);	
 	p = Pressure;
 	return t;
 }
 
-void REFPROP::GetFlashProperties(ThermoProperties Property_1,double Value_1,ThermoProperties Property_2,double Value_2)
+void RefProp::GetFlashProperties(ThermoProperties Property_1,double Value_1,ThermoProperties Property_2,double Value_2)
 {
 
 	//specify the required function
@@ -726,34 +793,10 @@ void REFPROP::GetFlashProperties(ThermoProperties Property_1,double Value_1,Ther
 
 	}
 
-	/*
-	CheckError(ierr,herr);
-	ThermoPropertiesValues^ VLS = gcnew ThermoPropertiesValues();
-	VLS->Temperature = t;
-	VLS->Pressure = p;
-	VLS->Density = D;
-	VLS->InternalEnergy = e;
-	VLS->Enthalpy = h;
-	VLS->Entropy = s;
-	VLS->Quality = q;
-	VLS->Isochoric_SpecificHeat = cv;
-	VLS->Isobaric_SpecificHeat = cp;
-	VLS->SoundSpeed = w;
-	VLS->Density_LiquidPhase = rhol;
-	VLS->Density_VaporPhase = rhov;
-	VLS->x = gcnew array<double>(1);
-		VLS->x[0] = XLIQ[0];
-	VLS->y = gcnew array<double>(1);
-		VLS->y[0] = XVAP[0];
-
-
-	return VLS;
-	*/
-
 }
 
 
-void REFPROP::ThermalProperties(double Temperature, double Density)
+void RefProp::ThermalProperties(double Temperature, double Density)
 {
 
 	EnsureCurrentFluid();
@@ -781,20 +824,4 @@ void REFPROP::ThermalProperties(double Temperature, double Density)
 		cv = cv / mw;
 		cp = cp / mw;
 	}
-
-	/*
-	ThermoPropertiesValues^ VLS = gcnew ThermoPropertiesValues();
-
-	VLS->Temperature = Temperature;
-	VLS->Pressure = p;
-	VLS->Density = Density;
-	VLS->InternalEnergy = e;
-	VLS->Enthalpy = h;
-	VLS->Entropy = s;
-	VLS->Isochoric_SpecificHeat = cv;
-	VLS->Isobaric_SpecificHeat = cp;
-	VLS->SoundSpeed = w;
-
-	return VLS;
-	*/
 }
