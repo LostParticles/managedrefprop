@@ -24,6 +24,8 @@ namespace ManagedRefProp {
 		array<String^>^ Fluids; 
 		array<double>^ Fractions;
 
+		int MixturesCount;
+
 
 	public:
 		int ErrorCode;
@@ -69,13 +71,13 @@ namespace ManagedRefProp {
 
 			MyREFPROP = new RefProp();
 
-			int flength = fluids->Length;
+			MixturesCount = fluids->Length;
 
-			Fluids = gcnew array<String^>(flength);
-			Fractions = gcnew array<double>(flength);
+			Fluids = gcnew array<String^>(MixturesCount);
+			Fractions = gcnew array<double>(MixturesCount);
 			
 
-			for(int iy=0; iy<flength; iy++)
+			for(int iy = 0; iy < MixturesCount; iy++)
 			{
 				array<String^>^ flds = fluids[iy]->Split('=');
 
@@ -265,10 +267,17 @@ namespace ManagedRefProp {
 			VLS->SoundSpeed = MyREFPROP->w;
 			VLS->Density_LiquidPhase = MyREFPROP->rhol;
 			VLS->Density_VaporPhase = MyREFPROP->rhov;
-			VLS->XLIQ = gcnew array<double>(1);
-				VLS->XLIQ[0] = MyREFPROP->XLIQ[0];
-			VLS->XVAP = gcnew array<double>(1);
-				VLS->XVAP[0] = MyREFPROP->XVAP[0];
+
+			
+			VLS->XLIQ = gcnew array<double>(MixturesCount);
+			
+			for(int ix=0; ix < MixturesCount; ix++)
+				VLS->XLIQ[ix] = MyREFPROP->XLIQ[ix];
+
+			VLS->XVAP = gcnew array<double>(MixturesCount);
+
+			for(int iy=0; iy < MixturesCount; iy++)
+				VLS->XVAP[iy] = MyREFPROP->XVAP[iy];
 
 
 			return VLS;
