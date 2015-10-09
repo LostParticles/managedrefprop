@@ -1,8 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManagedRefProp", "ManagedREFPROP\ManagedREFPROP.vcproj", "{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{90EDF5D4-448C-4F76-B1A5-67AE98DE60B3}"
 	ProjectSection(SolutionItems) = preProject
 		LoadingMixture.txt = LoadingMixture.txt
@@ -14,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Notes", "Notes", "{90EDF5D4
 		TRANSPORT PROPERTY SUBROUTINE.TXT = TRANSPORT PROPERTY SUBROUTINE.TXT
 		UTILITY SUBROUTINES.TXT = UTILITY SUBROUTINES.TXT
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ManagedREFPROP", "ManagedREFPROP\ManagedREFPROP.vcxproj", "{E28D50F3-29A9-4A03-A2D6-DEE46D5E2409}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestManagedRefProp", "TestManagedRefProp\TestManagedRefProp.csproj", "{7FECA7F4-1101-4F5B-AE3D-7D21C7B8A1E6}"
 EndProject
